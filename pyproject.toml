@@ -1,9 +1,9 @@
 [project]
-name = "tiog"
+name = "hw"
 version = "0.1.0"
 description = ""
 authors = [
-    {name = "vdyshlevyi", email = "vdyshlevyi@gmail.com"},
+    {name = "kateryna_kornysheva", email = "katorifmmm@gmail.com"},
 ]
 readme = "README.md"
 requires-python = ">=3.12"
@@ -16,6 +16,7 @@ package-mode = false
 python = "^3.12"
 
 requests = ">=2.32.3,<3.0.0"
+jinja2 = "^3.1.6"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.15.0"

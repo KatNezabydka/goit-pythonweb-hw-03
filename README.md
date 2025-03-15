@@ -1,7 +1,4 @@
-# Tiog
-
-This project will contain all code base related to the lectures.
-
+# Message blog
 
 ## Prerequisites
 
@@ -12,12 +9,6 @@ Before you start, make sure you have:
 
 ## Installation
 
-### 1. **Clone the repository**:
-```bash
-git clone https://gitlab.com/vdyshlevyi/tiog
-cd tiog
-git checkout lecture_3
-```
 
 ### 2. **Create a virtual environment**:
 ```bash
@@ -45,23 +36,4 @@ docker compose build
 ### 3. **Run**:
 ```bash
 docker compose up -d
-```
-
-
-## Tests
-
-### 1. **Run tests via**:
-```bash
-make test
-# or
-pytest
-```
-
-### 2. **Check tests coverage**:
-```bash
-make coverage
-# or
-poetry run coverage run --source="." -m pytest -vv
-poetry run coverage xml
-poetry run coverage report -m --fail-under=5.00
 ```

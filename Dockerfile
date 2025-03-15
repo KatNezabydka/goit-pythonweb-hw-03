@@ -1,23 +1,19 @@
-# Docker-команда FROM вказує базовий образ контейнера
-# Наш базовий образ - це Linux з попередньо встановленим python-3.10
-# Краще використовувати python:3.10-alpine3.20, оскільки він має менший розмір
-# REPOSITORY    TAG       IMAGE ID       CREATED          SIZE
-# tiog          0.1.0     60746a585e65   14 seconds ago   1.02GB  <-- python:3.10
-# tiog          0.2.0     36cd2ac84e5a   5 seconds ago    164MB   <-- python:3.10-slim
-# tiog          0.3.0     2f3eaff77076   9 seconds ago    67.8MB  <-- python:3.10-alpine3.20
 FROM python:3.10-alpine3.20
 
-# Встановимо змінну середовища
-ENV APP_HOME=/app
 
-# Встановимо робочу директорію всередині контейнера
+ENV APP_HOME=/app
 WORKDIR $APP_HOME
 
-# Скопіюємо інші файли в робочу директорію контейнера
-COPY . .
+RUN apk add --no-cache gcc musl-dev python3-dev libffi-dev openssl-dev curl bash && \
+    curl -sSL https://install.python-poetry.org | python3 - && \
+    export PATH="/root/.local/bin:$PATH" && \
+    poetry --version
 
-# Позначимо порт, де працює застосунок всередині контейнера
+ENV PATH="/root/.local/bin:$PATH"
+COPY pyproject.toml poetry.lock ./
+RUN poetry install --no-root --no-interaction --no-ansi
+
+COPY . .
 EXPOSE 3000
 
-# Запустимо наш застосунок всередині контейнера
-ENTRYPOINT ["python", "main.py"]
+ENTRYPOINT ["poetry", "run", "python", "main.py"]

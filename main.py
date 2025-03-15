@@ -8,7 +8,6 @@ import json
 from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
 
-# Настройка логирования
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -16,7 +15,6 @@ logging.basicConfig(
     filemode="a"
 )
 
-# Настройка Jinja2
 TEMPLATES_PATH = Path(__file__).parent / "templates"
 env = Environment(loader=FileSystemLoader(TEMPLATES_PATH), autoescape=True)
 
@@ -25,20 +23,17 @@ class HttpHandler(BaseHTTPRequestHandler):
     BASE_PATH = Path(__file__).parent
 
     def do_POST(self) -> None:
-        """Обработчик POST-запросов (сохранение данных)"""
         data = self.rfile.read(int(self.headers["Content-Length"]))
         data_parse = urllib.parse.unquote_plus(data.decode())
         logging.info(f"Data parse: {data_parse}")
         data_dict = {key: value for key, value in [el.split("=") for el in data_parse.split("&")]}
         append_new_entry(data_dict)
 
-        # Перенаправление на главную страницу
         self.send_response(HTTPStatus.FOUND)
         self.send_header("Location", "/")
         self.end_headers()
 
     def do_GET(self) -> None:
-        """Обработчик GET-запросов (загрузка страниц)"""
         route = urllib.parse.urlparse(self.path)
         file_path = Path(self.BASE_PATH / "static" / route.path[1:])
 
@@ -54,7 +49,6 @@ class HttpHandler(BaseHTTPRequestHandler):
             self.send_html_file("error.html", HTTPStatus.NOT_FOUND)
 
     def send_html_file(self, filename: str, status: int = HTTPStatus.OK) -> None:
-        """Отправка статического HTML-файла"""
         self.send_response(status)
         self.send_header("Content-type", "text/html")
         self.end_headers()
@@ -62,7 +56,6 @@ class HttpHandler(BaseHTTPRequestHandler):
             self.wfile.write(fd.read())
 
     def send_static(self, path: Path) -> None:
-        """Отправка статических файлов"""
         self.send_response(HTTPStatus.OK)
         mt = mimetypes.guess_type(path)
         self.send_header("Content-type", mt[0] if mt else "text/plain")
@@ -71,7 +64,6 @@ class HttpHandler(BaseHTTPRequestHandler):
             self.wfile.write(file.read())
 
     def render_template(self, template_name: str, **context) -> None:
-        """Рендеринг Jinja2 шаблона"""
         template = env.get_template(template_name)
         content = template.render(context)
 
@@ -82,7 +74,6 @@ class HttpHandler(BaseHTTPRequestHandler):
 
 
 def append_new_entry(new_data, filename="storage/data.json"):
-    """Сохранение новых данных в JSON-файл"""
     timestamp = datetime.now().isoformat()
     try:
         with open(filename, "r", encoding="utf-8") as file:
@@ -101,7 +92,6 @@ def append_new_entry(new_data, filename="storage/data.json"):
 
 
 def load_messages(filename="storage/data.json"):
-    """Загрузка сохранённых сообщений"""
     try:
         with open(filename, "r", encoding="utf-8") as file:
             return json.load(file)

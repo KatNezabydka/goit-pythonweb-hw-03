@@ -34,7 +34,7 @@
 	</nav>
 	<div class="row justify-content-center">
 		<div class="col-5 align-self-center">
-			<h1>Збережені сповіщення</h1>
+			<h1>Messages</h1>
 			{% if messages %}
 			{% for timestamp, data in messages.items() %}
 			<div class="message">
@@ -43,7 +43,7 @@
 			</div>
 			{% endfor %}
 			{% else %}
-			<p>Немає повідомлень.</p>
+			<p>No messages</p>
 			{% endif %}
 		</div>
 	</div>
